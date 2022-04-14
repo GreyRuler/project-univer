@@ -31,6 +31,36 @@ def area_square(point_a: Point, point_b: Point, point_c: Point, point_d: Point):
                 composition_vector(point_d, point_a))) / 2
 
 
+# def square(points):
+#     eps = 1e-10
+#     min_area = 0
+#     max_area = 0
+#     index_points_min_area = ()
+#     index_points_max_area = ()
+#
+#     for a in range(len(points)):
+#         for b in range(a, len(points)):
+#             for c in range(b, len(points)):
+#                 vector_a = vector_coordinates(points[a], points[b])
+#                 vector_b = vector_coordinates(points[b], points[c])
+#                 if vector_a[0] == vector_b[1] and abs(vector_a[1]) == vector_b[0]:
+#                     for d in range(c, len(points)):
+#                         vector_c = vector_coordinates(points[c], points[d])
+#                         vector_d = vector_coordinates(points[d], points[a])
+#                         if abs(vector_a[0]) == vector_c[0] and abs(vector_a[1]) == vector_c[1] and abs(vector_a[0]) == vector_d[1] and vector_a[1] == vector_d[0]:
+#                             area = area_square(points[a], points[b], points[c], points[d])
+#
+#                             if area > max_area:
+#                                 max_area = area
+#                                 index_points_max_area = (a, b, c, d)
+#
+#                             if area > eps and (min_area - area > eps or min_area < eps):
+#                                 min_area = area
+#                                 index_points_min_area = (a, b, c, d)
+#
+#     return min_area, index_points_min_area, max_area, index_points_max_area
+
+
 def square(points):
     eps = 1e-10
     min_area = 0
@@ -41,20 +71,22 @@ def square(points):
     for a in range(len(points)):
         for b in range(a, len(points)):
             for c in range(b, len(points)):
-                vector_a = vector_coordinates(points[a], points[b])
-                vector_b = vector_coordinates(points[b], points[c])
-                if vector_a[0] == vector_b[1] and abs(vector_a[1]) == vector_b[0]:
+                x_m = (points[a].x + points[c].x) / 2
+                y_m = (points[a].y + points[c].y) / 2
+                x_b = x_m + y_m - points[a].y
+                y_b = y_m - x_m + points[a].x
+                if points[b].x == x_b and points[b].y == y_b:
                     for d in range(c, len(points)):
-                        vector_c = vector_coordinates(points[c], points[d])
-                        vector_d = vector_coordinates(points[d], points[a])
-                        if abs(vector_a[0]) == vector_c[0] and abs(vector_a[1]) == vector_c[1] and abs(vector_a[0]) == vector_d[1] and vector_a[1] == vector_d[0]:
+                        x_d = x_m - y_m + points[a].y
+                        y_d = y_m + x_m - points[a].x
+                        if points[d].x == x_d and points[d].y == y_d:
                             area = area_square(points[a], points[b], points[c], points[d])
 
                             if area > max_area:
                                 max_area = area
                                 index_points_max_area = (a, b, c, d)
 
-                            if area > eps and (min_area - area > eps or min_area < eps):
+                            if area > eps and (min_area > area or min_area < eps):
                                 min_area = area
                                 index_points_min_area = (a, b, c, d)
 
@@ -62,7 +94,7 @@ def square(points):
 
 
 def main():
-    points = generate_point(count=10, of=0, to=5)
+    points = generate_point(count=100, of=-10, to=10)
 
     start_time = time.time()
     min_area, index_points_min_area, max_area, index_points_max_area = square(points)
